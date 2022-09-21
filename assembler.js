@@ -314,7 +314,7 @@ function SimulatorWidget(node) {
       if ((addr >= 0x0000) && (addr < 0xfe00)) {
         return memArray[addr] = val;
       } else {
-        return False;
+        return false;
       }
     }
 
