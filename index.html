@@ -1,10 +1,34 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <link href="style.css" rel="stylesheet" type="text/css" />
     <title>6502 assembler/simulator</title>
-    <link href="prism.css" rel="stylesheet" />
-  </head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin >
+      <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
+      <script src="hljs/highlight.min.js"></script>
+      <link rel="stylesheet" href="hljs/atom-one-dark.css"/>
+      <script src="hljs/asm6502.js"></script>
+
+      <script src="code-input/code-input.min.js"></script>
+      <link rel="stylesheet" href="code-input/code-input.css">
+      <script src="code-input/plugins/indent.min.js"></script>
+
+      <link href="style.css" rel="stylesheet" type="text/css" />
+
+      <!--Register code-input template-->
+      <script>
+          codeInput.registerTemplate("syntax-highlighted",
+              codeInput.templates.hljs(
+                  hljs,
+                  [
+                      // All plugins used must be imported above.
+                      new codeInput.plugins.Indent(true, 2) // Allow Tab-key indentation, with 2 spaces indentation
+                  ]
+              )
+          );
+          // Register templates with different names here, if needed.
+      </script>  </head>
   <body>
     <div class="widget">
       <div class="buttons">
@@ -14,23 +38,23 @@
         <input type="button" value="Hexdump" class="hexdumpButton" />
         <input type="button" value="Disassemble" class="disassembleButton" />
         <input type="button" value="Notes" class="notesButton" />
-	Speed: 
+    <label for="speed">Speed:</label>
 	<input type="range" min="97" max="10000" class="slider" id="speed" value="97" />
 	<br />
 	<input type="button" value="Save" class="downloadButton" />
-	<input type="button" value="Load file:" class="uploadButton" />
-	<input type="file" id="uploadFilename">
+	<input type="button" value="Load" class="uploadButton" />
+    <label for="uploadFilename">File:</label>
+    <input type="file" id="uploadFilename">
       </div>
 
 
     <!--  <textarea class="code" id="code"></textarea> -->
-
-    <code-bedder id="code" class="code" data-language="asm6502" onhighlight="Prism.highlightElement(this)"></code-bedder>
+      <code-input template="syntax-highlighted" language="asm6502"></code-input>
 
       <canvas class="screen" width="160" height="160"></canvas>
 
       <div class="debugger">
-        <input type="checkbox" class="debug" name="debug" />
+        <input id="debug" type="checkbox" class="debug" name="debug" />
         <label for="debug">Debugger</label>
         <div class="minidebugger"></div>
         <div class="buttons">
@@ -72,15 +96,15 @@
 
 	<div class="monitorControls">
         <label for="monitoring">Monitor</label>
-        <input type="checkbox" class="monitoring" name="monitoring" />
+        <input id="monitoring" type="checkbox" class="monitoring" name="monitoring" />
 
         <label for="start">Start: $</label>
-        <input type="text" value="0" class="start" name="start" />
+        <input id="start" type="text" value="0" class="start" name="start" />
         <label for="length">Length: $</label>
-        <input type="text" value="100" class="length" name="length" />
+        <input id="length" type="text" value="100" class="length" name="length" />
 
 	<label for="console">Text screen</label>
-	<input type="checkbox" class="console" name="console" value="checked" checked />
+	<input id="console" type="checkbox" class="console" name="console" value="checked" checked />
       </div>
 
       <div class="monitor"><pre><code></code></pre></div>
@@ -190,14 +214,14 @@ show up as blanks.
 <b>ROM Routines:</b>
 These routines are defined in ROM:
 * SCINIT $ff81 - Initialize and clear the character display
-* CHRIN $ffcf - Input one character from keyboard (returns A)
-* CHROUT $ffdw - Outputs one character (A) to the screen at the current cursor
+* CHRIN  $ffcf - Input one character from keyboard (returns A)
+* CHROUT $ffd2 - Outputs one character (A) to the screen at the current cursor
     position. Screen will wrap/scroll appropriately. Printable characters
     and cursor codes ($80/$81/$82/$83 for up/right/down/left) as well as
     RETURN ($0d) are accepted. Printable ASCII codes with the high bit set
     will be printed in reverse video.
 * SCREEN $ffed - Returns the character screen size in the X and Y registers.
-* PLOT $fff0 - gets (CARRY=1) or sets (CARRY=0) the cursor position
+* PLOT   $fff0 - gets (CARRY=1) or sets (CARRY=0) the cursor position
    If C=0: X,Y registers set the cursor position
            Y:X is returned as a pointer to the current screen position
    If C=1: X,Y registers return the current cursor position
@@ -235,39 +259,15 @@ Source code for this emulator:
 <a href="https://github.com/ctyler/6502js" target="_blank">https://github.com/ctyler/6502js</a>
 
 Licenses:
-* The emulator is licensed under the terms of the GPL version 3; see the LICENSE file in the source code.
-* The code-bedder library (https://codebedder.com) is licensed freely ("This library is free to use however you like.")
-* The prism.js library (https://prismjs.com) is licensed under the MIT license as follows (see the LICENSE.prism file in the source code):
-
-  MIT LICENSE
-
-  Copyright (c) 2012 Lea Verou
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-</div>
+* The emulator is licensed under the terms of the GPL version 3; see the LICENSE file in the source code. 
+* The code-input (https://github.com/WebCoder49/code-input) code is licensed under MIT (see the LICENSE.code-input file).
+* The highlight.js library is distributed under the BSD 3-Clause license (see the LICENSE.highlightjs file).
+      </div>
 
     <script src="es5-shim.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="assembler.js"></script>
-
-    <script src="prism.js"></script>
-    <script src="codebedder.js"></script>
+    </div>
   </body>
 </html>
  
