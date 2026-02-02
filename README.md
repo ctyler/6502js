@@ -11,3 +11,5 @@ The 6502js assembler and simulator is distributed under the terms of the GPL ver
 The code-bedder (https://codebedder.com) code is licensed freely ("This library is free to use however you like.").
 The Prism.js library is distributed under the MIT license (see the LICENSE.prism file).
 
+Messed up this file!!
+
